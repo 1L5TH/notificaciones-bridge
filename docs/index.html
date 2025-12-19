@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Activando Notificaciones...</title>
+        <script
+            src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
+            async=""
+        ></script>
+        <script>
+            window.OneSignal = window.OneSignal || [];
+
+            // Reemplaza con tu APP ID de OneSignal
+            const myAppId = "TU-APP-ID-AQUI";
+            // Reemplaza con la IP de tu servidor donde recibirás el dato
+            const miServidorHttp =
+                "http://159.54.143.13:3000/guardar_token.php";
+
+            OneSignal.push(function () {
+                OneSignal.init({
+                    appId: myAppId,
+                    safari_web_id: "TU-SAFARI-ID", // Opcional
+                    notifyButton: { enable: false }, // Lo haremos automático
+                });
+
+                // Verificamos si ya está suscrito o pedimos permiso
+                OneSignal.showNativePrompt();
+
+                // Cuando el usuario se suscribe, obtenemos su ID
+                OneSignal.on("subscriptionChange", function (isSubscribed) {
+                    if (isSubscribed) {
+                        OneSignal.getUserId(function (userId) {
+                            // AQUÍ ESTÁ LA MAGIA:
+                            // Redirigimos al usuario de vuelta a tu server inseguro con el ID en la mano
+                            window.location.href =
+                                miServidorHttp + "?token=" + userId;
+                        });
+                    }
+                });
+
+                // Si el usuario ya estaba suscrito de antes, lo detectamos y reenviamos
+                OneSignal.getUserId(function (userId) {
+                    if (userId) {
+                        // Opcional: Redirigir inmediatamente si ya lo tienes
+                        //window.location.href = miServidorHttp + "?token=" + userId;
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h3>Por favor, permite las notificaciones para continuar...</h3>
+    </body>
+</html>
