@@ -24,7 +24,8 @@
                 await OneSignal.init({
                     appId: myAppId,
                     workerPath: "OneSignalSDKWorker.js",
-
+                    serviceWorkerParam: { scope: "/notificaciones-bridge/" },
+                    serviceWorkerPath: "OneSignalSDKWorker.js",
                     // Forzamos el registro del scope para que sepa que opera en la subcarpeta
                     scope: "/notificaciones-bridge/",
                     path: "/notificaciones-bridge/",
